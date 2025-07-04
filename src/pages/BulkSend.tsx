@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useForm } from "react-hook-form";
-import { MessageSquare, Upload, Send, Users } from "lucide-react";
+import { MessageSquare, Upload, Send, Users, Settings, Image, Video } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 
@@ -18,6 +17,10 @@ interface Contact {
 
 interface MessageForm {
   message: string;
+  messageId: string;
+  token: string;
+  templateId: string;
+  mediaUrl: string;
 }
 
 const BulkSend = () => {
@@ -28,6 +31,10 @@ const BulkSend = () => {
   const form = useForm<MessageForm>({
     defaultValues: {
       message: "",
+      messageId: "",
+      token: "",
+      templateId: "",
+      mediaUrl: "",
     },
   });
 
@@ -96,6 +103,15 @@ const BulkSend = () => {
       return;
     }
 
+    if (!data.token.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter your WhatsApp API token",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSending(true);
     
     // Simulate sending messages
@@ -131,7 +147,101 @@ const BulkSend = () => {
           <p className="text-muted-foreground">Send personalized messages to multiple WhatsApp contacts</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* API Configuration Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                API Configuration
+              </CardTitle>
+              <CardDescription>
+                Configure your WhatsApp API settings
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="token"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>API Token *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter your WhatsApp API token"
+                            type="password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="messageId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Message ID</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter message ID (optional)"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="templateId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Template ID</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter template ID (optional)"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="mediaUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <Image className="h-4 w-4" />
+                          <Video className="h-4 w-4" />
+                          Media URL
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter image/video URL (optional)"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          URL for image or video to include with messages
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </Form>
+            </CardContent>
+          </Card>
+
           {/* Contacts Section */}
           <Card>
             <CardHeader>
@@ -172,7 +282,7 @@ const BulkSend = () => {
               </div>
 
               {contacts.length > 0 && (
-                <div className="max-h-80 overflow-auto">
+                <div className="max-h-60 overflow-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -242,7 +352,7 @@ const BulkSend = () => {
                         <FormControl>
                           <Textarea
                             placeholder="Enter your message here..."
-                            className="min-h-40"
+                            className="min-h-32"
                             {...field}
                           />
                         </FormControl>
@@ -258,6 +368,11 @@ const BulkSend = () => {
                     <h3 className="font-medium mb-2">Preview</h3>
                     <div className="bg-gray-50 p-3 rounded-lg text-sm">
                       {form.watch("message") || "Your message preview will appear here..."}
+                      {form.watch("mediaUrl") && (
+                        <div className="mt-2 text-xs text-blue-600">
+                          📎 Media: {form.watch("mediaUrl")}
+                        </div>
+                      )}
                     </div>
                   </div>
 
