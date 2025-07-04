@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageSquare, Send, Whatsapp } from "lucide-react";
+import { MessageSquare, Send, MessageCircle } from "lucide-react";
 
 const features = [
   {
@@ -14,7 +14,7 @@ const features = [
     description: "Intelligent message scheduling and delivery optimization to ensure maximum reach and engagement rates."
   },
   {
-    icon: Whatsapp,
+    icon: MessageCircle,
     title: "WhatsApp Integration",
     description: "Seamless integration with WhatsApp Business API for reliable and professional message delivery."
   },
@@ -29,7 +29,7 @@ const features = [
     description: "Detailed analytics on message delivery, open rates, and customer engagement to optimize your campaigns."
   },
   {
-    icon: Whatsapp,
+    icon: MessageCircle,
     title: "Contact Management",
     description: "Organize your contacts into groups, import from CSV, and manage your customer database efficiently."
   }
